@@ -3,9 +3,7 @@
   Author:  Jibril Sulaiman
   Date:    2026-10-19
   What:    Nineteen business events with the trigger, the trail each should leave in HubSpot
-           and the connected platforms, where to verify, and the failure already seen for
-           a business that runs free live classes, sells event tickets and a program, texts
-           at scale, and takes money through the processor's payment links.
+           and the connected platforms, where to verify, and the failure already seen.
   Why:     Integration-by-integration tests pass while the business event still leaves the
            wrong trail. Add and remove rows for your business.
 -->

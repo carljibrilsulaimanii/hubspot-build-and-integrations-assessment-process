@@ -16,8 +16,6 @@
 
 A step-by-step process for assessing a HubSpot portal you did not build, together with every system wired into it: payments, phone and SMS, ad platforms, a community platform, the legacy CRM you are migrating off, and the scripts that run outside HubSpot. One person runs it, the HubSpot admin, and it also produces the answers a CTO asks on day one. It is read-only until the last phase: nothing is created, edited, enabled, disabled or rotated until a reviewed build doc says so.
 
-It was written for a portal where the business runs free live classes, sells event tickets and a high-ticket program, texts at scale through a contact-center platform, and takes money through Stripe Payment Links rather than HubSpot Payments. The method is general; the examples come from that shape of business.
-
 Built by [Jibril Sulaiman](https://github.com/carljibrilsulaimanii).
 
 ## Contents
