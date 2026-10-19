@@ -1,0 +1,37 @@
+<!--
+  scenario-walkthroughs.md -- the Step 7 scenario table
+  Author:  Jibril Sulaiman
+  Date:    2026-10-19
+  What:    Nineteen business events with the trigger, the trail each should leave in HubSpot
+           and the connected platforms, where to verify, and the failure already seen for
+           a business that runs free live classes, sells event tickets and a program, texts
+           at scale, and takes money through the processor's payment links.
+  Why:     Integration-by-integration tests pass while the business event still leaves the
+           wrong trail. Add and remove rows for your business.
+-->
+
+# Scenario walkthroughs
+
+Run each on a real recent record, read-only. Record pass, partial or fail with the record links, and the person who would notice a failure.
+
+| Scenario | Trigger | Expected trail | Where to verify | Failure already seen |
+|---|---|---|---|---|
+| A new recurring event is set up | Configuration record built, forms and workflow branches edited, pages flipped | Config record with a future start time; the workflow branch edits; the confirmation page's redirect block; calendar buttons; countdown | The configuration object; the registration, attendance and replay workflows; each confirmation page fetched with a fresh query string | A stale start time redirected every new registrant to the old stream; one page lacked the redirect block for weeks |
+| Event night | Start time, thousands of registrations that day, "watch now" submissions | Registration records on the event date; attendance records the next morning; attendance events to the ad platforms; the replay workflow the day after | The business object grouped by event date and label; the ad-platform guard properties; Events Manager | A label leak after a flip; one attendance record per submit; attendance capture collapsed on the first event with a new writer |
+| Self-serve purchase | Payment link checkout | Mirror record succeeded; product name synced; contact linked; business record created; deal in the first stage with tier and round-robin owner; purchase event to the ad platforms; post-purchase email and SMS | Mirror record timeline, the business object, the deal, Events Manager | Hundreds of deals with no tier because the tier is read from words in the product name |
+| Rep-attributed purchase | A rep call over a threshold or several manual texts, then a purchase | Activity stamped on the contact; attribution sets sale source to the rep; the deal lands in the rep's stage, owned by the rep | The contact's attribution fields; the deal's attribution fields | Text-only reps were invisible until the phone platform's text fields started syncing |
+| Upgrade | Buyer pays an upgrade link | Current tier updated; upgrade rep and amount recorded; the existing deal moved to Upgraded | The buyer's deals | Most upgrades created a second deal instead of moving the first |
+| Comp | 100%-off code at checkout | The checkout-completed event hits the comp workflow; a business record with a comp type and no payment id | The business object filtered to comps | A buyer who is not already a contact never enrolls; nothing creates the contact |
+| Refund or chargeback | Refund issued in the processor | Nothing changes in HubSpot | The processor only | Revenue sums overstate by the refund total; the payment status never becomes Refunded |
+| Buy now pay later purchase | A BNPL method on a payment link | Same trail as a card purchase; the method is visible only in the processor | The processor's payment detail | Business concern: buyers who cannot afford the purchase |
+| Deposit for the program | Deposit paid or application submitted | One deal in the deposit stage; lead status set; deposit origin set | The program pipeline, the contact's lead status | Two deals created by two workflows for one deposit |
+| Call booked by a rep or by the AI agent | Meeting booked on the round-robin link | Appointment record; deal in the booked stage with the placeholder amount; closer owner set; reminders; confirmation text | Appointments, the deal, the phone platform's conversation | Only one rep's links were set automatically; the deal never moved after the call; the agent booked into live rep chats before its schedule was fixed |
+| Call outcome recorded | Rep sets the meeting outcome | Appointment moved to its outcome stage; deal fields updated; deal stage unchanged | The appointment pipeline, the deal's fields | Stages only move by hand |
+| Marketing blast and replies | Short code blast through the phone platform | Thousands of inbox conversations; reply tags; needs-reply flags; opt-outs written to the contact | The shared inbox, the shared contact views | Most replies are opt-outs; reps text from the marketing line inside blast threads; stale "last inbound" writes trip triggers without a recency guard |
+| Community subscription or cancellation | Member purchase or cancel on the community platform | Webhook to the router; a sheet row; a HubSpot record once the migration cuts over | The router workflow, the subscriptions object | The router's win-back emails never send because a "remove from workflow" step sits before them |
+| Member logs into the community | Daily | Last-visited date updated on the contact | The contact property | The script failed with no alert |
+| Payment sync stops | Connection error at the processor or HubSpot | Nothing; the mirror simply stops growing | Compare the processor's succeeded payments to mirror rows daily | An outage found by a person noticing missing payments; mappings wiped on restore |
+| A token or key expires | A 60-day user token, a refresh token on an app left in Testing, a rotated service key | Conversion workflows fail silently; a 401 names neither the key nor the other consumers | Workflow history tabs | No alert exists |
+| An employee leaves | HubSpot user deactivated | Owned contacts, deals, workflows, emails and segments reassigned; the phone platform's owner reassigned first | Users, the phone platform's users, the handoff list | The phone platform re-synced the old owner into HubSpot |
+| A new subdomain funnel launches | Pages published on a new host | Site header UTM capture present; tag manager present; the pixel's lead event firing; the redirect block on the confirmation page; a conversion event covering it | Live pages with a fresh query string; Events Manager by host | The lead event died on every funnel swap while page views kept firing |
+| A form is edited | Field added, removed or renamed | Workflow mappings still bind; hidden UTM fields intact; consent text intact | The workflows' branch mappings, the form definition | Renamed fields silently unbound workflow tokens |
