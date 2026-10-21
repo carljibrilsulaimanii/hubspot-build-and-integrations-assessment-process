@@ -247,3 +247,21 @@ email_name,send_date,send_method,subscription_type,content_type_marketing_or_tra
 ```csv
 contact_id,channel,message_date,sender,line,consent_record_found,consent_form,consent_date,subscription_type,within_consent,within_hours,notes
 ```
+
+## Legal documents (Step 9b)
+
+```csv
+document,url,last_updated,editor,version_history_kept,owner,linked_from_forms,linked_from_checkouts,linked_from_footers,linked_from_email,links_resolve,stale_copies_found,gap
+```
+
+## Privacy policy versus stack (Step 9b)
+
+```csv
+disclosure_item,required_by,policy_says,stack_does,match,gap
+```
+
+## Sensitive data register (Step 9b)
+
+```csv
+object,property_or_store,category,hipaa_relevant,marked_sensitive,who_can_read,copied_to_systems,in_exports,in_webhooks,in_ai_tools,agreement_in_place,gap
+```
