@@ -211,3 +211,39 @@ field,hubspot_source,phone_platform_source,processor_source,winner_when_they_dis
 ```csv
 vendor,open_tickets,oldest_ticket_days,promised,delivered,slipped_dates,relationship_owner_ours,relationship_owner_theirs,next_review
 ```
+
+## Consent inventory (Step 9b)
+
+```csv
+form,page_url,collects_phone,consent_language,checkbox_or_implied,program_name,frequency_stated,rates_notice,stop_help,terms_link,privacy_link,not_condition_of_purchase,consent_property,timestamp_property,gap
+```
+
+## Line registration (Step 9b)
+
+```csv
+line,number,type,registration_kind,registered_use_case,actual_use,registration_status,terms_section,program_name_matches,gap
+```
+
+## Sender suppression matrix (Step 9b)
+
+```csv
+sender_or_path,honours_stop,quiet_hours_handling,timezone_basis,frequency_cap,evidence,gap
+```
+
+## Subscription types (Step 9b)
+
+```csv
+subscription_type,active,description_shown,default_for_new_contacts,set_by_forms,set_by_workflows,set_by_imports,legal_basis_recorded,emails_sent_90d,opted_in,opted_out,never_set,gap
+```
+
+## Email send audit (Step 9b)
+
+```csv
+email_name,send_date,send_method,subscription_type,content_type_marketing_or_transactional,type_matches_content,physical_address,unsubscribe_link_works,one_click_header,gap
+```
+
+## Consent audit sample (Step 9b)
+
+```csv
+contact_id,channel,message_date,sender,line,consent_record_found,consent_form,consent_date,subscription_type,within_consent,within_hours,notes
+```
