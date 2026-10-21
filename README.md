@@ -139,7 +139,7 @@ The whole assessment can be done by hand from the HubSpot UI, the platform dashb
 | **Task tracker connector** (Asana or similar) | Where work is tracked and who owns what | | It lists the migration project |
 | **Meeting notes connector** (Granola or similar) | Transcripts of the syncs where designs were agreed | | It returns one transcript |
 | **Ad platform connectors** (Meta Ads) | Dataset stats, pixel Event Setup Tool rules, custom conversions | Some ad accounts are not enabled for the ads tools; dataset tools still work. Google Ads has no connector without a developer token from your own manager account | A dataset stats call returns rows |
-| **Legacy CRM connector** (GoHighLevel or similar) | Contacts, conversations, opportunities, payments for each sub-account | Workflow steps live only in the builder; the API returns names and status | It returns the sub-account it is bound to |
+| **Legacy CRM connector** (whatever platform the business used before) | Contacts, conversations, opportunities, payments for each account | Workflow steps often live only in the builder; the API may return names and status alone | It returns the account it is bound to |
 | **Automation connector** (Zapier) | The connections and zaps still live | | It lists the connections |
 | **Whiteboard connector** (Miro), optional | The process maps and the ERD on a board, if the team wants them there | | It lists a board |
 
