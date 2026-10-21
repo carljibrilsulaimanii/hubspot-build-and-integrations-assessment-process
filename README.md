@@ -79,6 +79,8 @@ Two lenses apply. The admin's own lens leads Steps 3 to 8 and 10: what exists, i
 
 **If you have five days, not five weeks.** Day 1: the rules, access, and send the survey. Day 2: the integrations pages walk, the keys and secrets map, the workflow list with on/off and errors. Day 3: the trusted-numbers sheet for the five numbers leadership quotes, and the counting rules. Day 4: the tracking QA (Step 8b) on one funnel end to end, and the three scenarios that touch money (self-serve purchase, refund, payment sync stops). Day 5: the risk register and the first thirty-day list. Everything else waits.
 
+**Questions this process answers, and where.** Which seats can we cut (3b). What payment types do we take and where does each land (3g). What is our whole tech stack (3m). What is connected to HubSpot and who owns it (3n, 3o). What does a workflow actually write (3j). Which number is right when two disagree (5a, 5f, 5f2). Is attribution working (8b). Are the pages right (8c). What happens when X occurs (7). What breaks if one person leaves or one key is rotated (9). Who does what every week (10). What do we fix first (11).
+
 ## What's in this repo
 
 | Path | What it is |
@@ -161,6 +163,12 @@ About half a day.
 
 **Test-data discipline.** Every end-to-end test leaves records. Before the first one: agree a test identity (an email on a qa+ alias and a test phone), add every internal and test email to the exclusion list reports already use, run page tests in a private window so cookies start empty, never run a processor test in live mode except with a $1 QA product that is refunded afterwards, and mark test-mode mirror rows so they are excluded everywhere. Log every test record you create with its id so it can be found and deleted.
 
+**Evidence grades.** Every finding carries the grade of its best evidence, and the report says so: A, read live from the system today with the read time; B, an export or a workflow JSON pulled this week; C, a document or a build doc; D, a conversation or someone's recollection. Nothing below B reaches the scorecard; a D is a hypothesis to test.
+
+**Independent re-check.** The person running the assessment often built much of what it assesses. Before the report goes out, someone else re-runs ten percent of the checks picked at random and records where they got a different answer.
+
+**Where it lives afterwards.** The workbook, the artifacts and the report go in one shared folder the team can reach, with a named owner. Re-run the five-day track every quarter and after every major change.
+
 **1b. Access.** Fill the access table: one row per system (HubSpot, phone and SMS platform, payment processor, each ad platform, community platform, legacy CRM, Google Workspace, task tracker, chat tool), with the role you were given, who granted it, and the date.
 
 **1c. Reading list.** Before the inventory, read whatever exists of: the secrets and service keys map (if none exists, Step 3 produces one), any process map of the sales setup, the implementation guide and SOP for the recurring operational task (for this business, setting up and flipping a class), the paid media plan, the catalog of what still runs on the legacy CRM, any departure handoff list, and the design document the migration was built from.
@@ -190,6 +198,8 @@ Hear what hurts from the people who use the system every day, and know the quest
 7. Step 11: send every respondent a two-paragraph note on what their answers led to. Anyone who answered and hears nothing will not answer next time.
 
 > ⚠️ **Do not skip the survey because the portal is "obvious".** The things people work around never appear in the portal. A spreadsheet someone keeps because a report cannot be trusted is a finding you will not get from any settings page.
+
+**2e. Two interviews the survey cannot replace.** Builder walkthroughs: for every artifact in Step 4, sit with the person who built the piece and have them narrate it while you read the workflow JSON on screen; record what they say it does, what the JSON says, and every difference. Departure interviews within 30 days: when someone leaves, collect every scheduled send and sequence in their name, every list and view they relied on, every login they held, every manual step only they knew and every promise they made to a vendor, while their accounts are still live.
 
 ✅ **Check:** the answer sheet exists, every row has a theme, the CTO table has fourteen rows waiting for answers, and the risk register has its first hypotheses.
 
@@ -245,6 +255,8 @@ Flag: any workflow ON with zero enrollments in 30 days; any OFF workflow a live 
 
 **3p. Automation that runs outside HubSpot.** One row per Apps Script project, ad-platform script, legacy-CRM workflow family and phone-platform automation: runtime, trigger, what it writes into HubSpot, owner, last successful run (the project's Executions page, the workflow list's enrolled count).
 
+**3p2. Message assets, archive candidates, timezones and vendor terms.** Message assets (marketing emails, SMS templates and sequences, CRM sequences, a bot's knowledge base) are customer-facing and drift: for each, still scheduled or live, the date it references, every link resolved, tokens that render blank, unsubscribe and STOP handling, the sender. Archive candidates beyond properties: workflows OFF for 90 days with no dependency or unnamed, lists nothing uses, stale cloned and test pages, forms with no submissions in 90 days, sequences nobody sends; output a list with the evidence that nothing depends on each. Timezones per system (portal time, the search API in UTC, the processor in UTC, each ad platform in its own, the phone platform's schedules) in one table. Vendor engagement terms for every agency and consultancy: contract end, service levels, weekend coverage, relationship owner, access held.
+
 **3q. Limits, governance and hygiene.**
 
 - **Limits and headroom.** HubSpot caps things silently. Record the current count against each cap: properties per object, active lists, workflows, custom objects and records per custom object, custom code actions and their 20-second timeout, webhook trigger definitions (50 properties), search results (10,000 per query; split by day), daily API calls, and the search API's rate limiting. Anything above 70% of a cap goes on the risk register with the date it will be hit at the current rate.
@@ -255,6 +267,8 @@ Flag: any workflow ON with zero enrollments in 30 days; any OFF workflow a live 
 - **Naming conventions.** Record the conventions in use and the ones nobody follows; propose one standard for new properties, workflows and lists.
 - **Backfill log.** Every one-shot backfill that ran (what it changed, when, with which key, whether it is off now). A backfill still on is a writer nobody expects.
 - **Legacy platform decommission.** Before the legacy CRM goes dark: export contacts with tags, conversations, payments and invoices, workflow definitions and page HTML; name where the export lives and who can read it; list the paths and short links still pointing at it.
+
+**3r. Full audit log review, API-assisted.** The audit log is the only change history the portal keeps outside workflow revisions. Pull all of it, from the portal's creation to today, into the workbook; clicking through the UI page by page is not a review. The audit log page keeps its filter state in the URL (category names, selected user ids, time period, page size up to 100) and loads its rows from the signed-in session's own JSON endpoint, so drive it from Chrome one category at a time (workflows, properties, lists, settings, app activity, content, users and permissions, exports, imports, deletes) and page until exhausted with the tab in front. For sign-ins and security events use the Account Activity API (`GET /account-info/v3/activity/login` and `/account-info/v3/activity/audit-logs`, Enterprise) with a service key. Save every row: timestamp in the business timezone, user, category, action, asset name and id, before and after values where given. Then look for: who builds (changes per user per week per category; an agency account changing workflows after its engagement ended); departed users (any change, login or export after their last day, and any live automation still attributed to them); bursts around incidents (what changed just before each outage, by whom); toggles (workflows switched on and off repeatedly, properties created and archived within days, test assets never cleaned up); keys, secrets, private apps and connected apps created or changed, and whether the secrets map knows; exports and bulk deletes, which leave no other trace; settings changes (domains, tracking code, email sending, subscription types, permission sets, Super Admins) matched to a known decision or flagged; out-of-hours and weekend changes matched to incidents; logins from new devices or locations and by shared accounts. Output: the full log as a workbook tab, a one-page summary by person, category and month with the incident clusters, and the list of changes nobody can explain, which goes on the risk register.
 
 ✅ **Check:** every tab has an owner and a status on every row, and the keys-and-secrets tab has no "unknown" row you have not tried View Logs on.
 
@@ -296,6 +310,8 @@ About two days.
 
 **5e2. Acceptance thresholds and sampling.** A check without a number is an opinion. Set a threshold for each measure before you read it, from the baseline your first read establishes, and investigate anything past it: registrations with no UTM per day, purchase records with a blank or junk first-touch field, last touch disagreeing with the processor's source, records the attribution fill skipped, contacts with a duplicate email or phone, the share of mirror rows that succeeded, attendance records with no email, workflows with errors in seven days. One portal's baseline, for scale: untagged registrations 14 to 23% a day (investigate above 25%), blank first touch on purchases 22.6% (investigate a rise of 3 points), junk 0 (investigate any). A property-history sample of five records proves nothing on a portal with hundreds of thousands of contacts: sample at least 30 per writer and per period, picked by random record id. Search results cap at 10,000, so split by day; the search API's equality filter is case-insensitive, so count case variants in code.
 
+**5e3. Month-end money reconciliation and phone-only contacts.** Once a month four numbers must agree or the differences be explained: the processor's payouts and refunds, the mirror object's succeeded rows, the business purchase records, and finance's ledger; expect refunds never written back, test rows, comps with no payment intent, invoices with no payment link, double checkouts. Count contacts with a phone and no email and with an email and no phone; they break email-keyed dedupe and decide whether a form's phone may stay optional.
+
 **5f. Reports people quote.** Every number that reaches leadership, agencies or sales in a normal week: who produces it, from which tool, with which filters, and whether a second person could reproduce it. Where two versions exist (Step 2 surfaces them), record both and the reason.
 
 ✅ **Check:** the trusted-numbers sheet has, for each metric, the exact query, the exclusions, the current value with its read time, and an owner.
@@ -328,6 +344,8 @@ About two days. Prove the system end to end on the events the business actually 
 Run each on a real recent record, read-only, and record pass, partial or fail with the record links.
 
 Three more scenarios belong on the table for most businesses: a product or tier sells out (what stops selling, where, and how long the gap is), the week of a live event (freeze, testing days, owners per system, daily check-ins, backup checkout links), and an ad platform billing hold (what stops, who is alerted first, how prepayments show in the balance).
+
+And one scenario that is not a system event at all: the mystery shopper. Register a test identity from a tagged ad link, attend, buy, reply STOP to one text, and keep a diary for ten days of every email, text and bot message with its time, sender, resolved links, personalization, duplicates and gaps. Duplicates, dead links in templates and overnight texts are usually found by customers first.
 
 ✅ **Check:** every scenario has a verdict and a record link, and the list of scenarios with no owner who would notice a failure is written down.
 
@@ -427,7 +445,12 @@ About two days. Know what one leaked credential, one departure or one deprecatio
 - Backups and retention: HubSpot keeps no restorable backup; are there scheduled exports, where do they go, who could rebuild a custom object from one.
 - API limits: daily call volume against the portal limit; the search API's rate limiting under scripted counts; which integration would fail first.
 - Access hygiene: whether two-factor authentication or single sign-on is enforced for every user, which logins are shared, when access was last reviewed and by whom, and the contract renewal calendar for every platform in the stack (renewal date, notice period, owner).
+- Domains, DNS and certificates: who holds the registrar and DNS login, when each domain renews, whether auto-renew is on, when each certificate expires.
 - Monitoring: list what would page a person today. Usually nothing does.
+
+**The minimum alert set.** "Monitoring: none" is a finding; propose the fix with it. Ten alerts, each with the signal, the check and who is paged: payment sync stopped (mirror rows created today versus the processor's succeeded payments today); a conversion workflow erroring (workflow error notifications routed to a shared channel, not one inbox); guard stamps falling to zero on an event night; an ad platform token's expiry on a calendar a week ahead; an OAuth refresh token's first failure; an ad-platform script's last run older than 36 hours; an Apps Script failure; the credit line's headroom under one week of spend; webhook delivery failures at the processor; a backfill workflow still ON a week after it should have finished.
+
+**Cost if it fails for a week.** Give every risk-register row a rough weekly cost in dollars or leads; the number can be crude, its job is to order the list.
 
 - Continuity: backup checkout links; a switchover plan for a second processor account; weekend coverage for the agency and the team; a restricted read key for an agency that wants to reconcile against the CRM itself (one key per consumer, named for them); who checks the ad platform credit line and prepayment schedule each week.
 
@@ -448,6 +471,11 @@ About a day. Understand the recurring work the system demands and whether it can
 
 - Roll up the cost of the whole stack (every seat, line, add-on, agency and per-event fee) into one monthly number with an owner per line, so the roadmap can say what a change saves or costs.
 
+- Service levels: speed to lead, reply time on messages that need a person, the agency's page-change turnaround, and who measures each.
+- A decision register: one row per design decision that shapes the build, with date, decider, where it is recorded, and whether it still holds.
+- A glossary of the lookalike terms (event date versus session versus start time; registration versus attendance versus replay records; first touch versus last touch; tier names and prices; the bots' names; the duplicate accounts).
+- A change gate for outside parties: one intake, one release checklist per change type (pages: Step 8c; ad templates: Step 8b; workflows: a build doc), and a day-one checklist for every new rep or marketer.
+
 ✅ **Check:** a RACI exists for every workflow family and every integration, and the manual steps that should be automated or checklisted are listed.
 
 ### Step 11. Score it, register the risks, write the roadmap
@@ -467,7 +495,9 @@ About two days. Turn findings into a prioritized plan the team can approve.
 | Operations | one person, undocumented manual steps | SOPs exist, second person trained | request queue, change control, on-call |
 | Documentation | conversations only | drafts and setup notes per integration held by one person | docs linked from inside HubSpot (descriptions, workflow notes) |
 
-**11b. Risk register.** One row per risk: id, risk, evidence, likelihood, impact, blast radius, owner, fix (build doc id). Seed it from Step 9 and the known-items list.
+**11a2. The report and the sign-off.** Three audiences, three pages. Leadership: one page with what the system does for the business, the five numbers and whether they can be trusted, the three risks that cost the most per week, the three fixes for this month, and the decisions only they can make. Builders and agencies: the findings log, one row per finding with its evidence grade, the step that proved it and the fix's owner. The next admin: the workbook, the artifacts, the decision register and the glossary. Nothing is finished until an ownership sign-off meeting has happened: every workflow family, integration and recurring task read aloud with its proposed owner, and each owner saying yes in the room. An owner column filled in alone is a wish.
+
+**11b. Risk register.** One row per risk: id, risk, evidence and its grade, likelihood, impact, blast radius, cost if it fails for a week, owner, fix (build doc id). Seed it from Step 9 and the known-items list.
 
 **11c. Roadmap.** Three buckets: stabilize (first 30 days: owners for orphaned assets, ownership reassignment in the right order, one key per coded action starting with the shared one, monitoring for the silent integrations, backfills off, the worst trigger fixed); make numbers trustworthy (30 to 60 days: unique keys enforced, the fact table, refunds written back, test rows excluded, the property merges and type fixes); reduce dependency (60 to 90 days: API version migration, personal tokens into a shared vault or system users, legacy platform retired in order, a request queue, a second person trained on the recurring cycle).
 

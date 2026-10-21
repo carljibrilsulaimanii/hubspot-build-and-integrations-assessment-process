@@ -149,7 +149,7 @@ hop,what_is_captured,what_is_lost,ratio_observed,ratio_expected,owner
 ## Risk register (Steps 9, 11)
 
 ```csv
-id,risk,evidence,likelihood,impact,blast_radius,owner,fix_build_doc_id,status
+id,risk,evidence,evidence_grade,likelihood,impact,blast_radius,cost_if_down_one_week,owner,fix_build_doc_id,status
 ```
 
 ## Scorecard (Step 11)
@@ -162,4 +162,28 @@ area,score_1_to_5,evidence,one_change_to_move_one_point
 
 ```csv
 id,area,item,date_found,evidence,fix_build_doc_id,status
+```
+
+## Decision register (Step 10)
+
+```csv
+date,decision,decided_by,recorded_where,still_holds,notes
+```
+
+## Message assets (Step 3)
+
+```csv
+asset,type,system,status,event_or_date_referenced,links_resolved,blank_tokens,sender,unsubscribe_or_stop,owner
+```
+
+## Archive candidates (Step 3)
+
+```csv
+item,type,last_used,dependencies_checked,evidence_nothing_depends,verdict,owner
+```
+
+## Audit log (Step 3)
+
+```csv
+timestamp_local,user,category,action,asset_name,asset_id,before,after,explained_by,flag
 ```
