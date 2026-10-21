@@ -207,6 +207,8 @@ About a week. One workbook tab per area; every row gets an owner and a status (l
 
 **3g. Payments and commerce.** The processor's dashboard plus HubSpot's Payment Processing app and any mirror objects. Record every live Payment Link with its product, price, after-payment redirect and live or test state; optional order bumps; webhook destinations and which workflow each feeds; products and prices with a price-to-tier map; subscriptions and where they land; invoices still in flight on the legacy platform; refunds and disputes (and whether anything writes them back); payout timing; who has processor admin; which account owns the Data Sync connection; test-mode rows; comps. Then confirm every payment type the survey named: card and wallets, buy now pay later, bank transfer, payment plans, subscriptions, comps and discounts, refunds and chargebacks, test-mode payments; one row each with the processor, the product, where the record lands in HubSpot, and who handles exceptions.
 
+**3g2. Events, AI features and ad billing.** If the business runs live events: who owns each system during event week (broadcast, CRM, payments, phone, forms, automations), the run-of-show document, the setup freeze and the testing days, the in-person registration object and whether anything writes to it, check-in, on-site sales and upgrades, and how a sold-out tier is handled (HubSpot holds no inventory, so a sell-out is a page modal plus message copy plus a deactivated payment link, each done by hand). Record whether backup checkout links exist and whether a second processor account has a switchover plan. Record which AI features are on (Breeze agents, data agents, Copilot, AI-assisted lists), who uses them, the data-sharing settings behind them, and where AI steps sit inside live workflows, because they do not show in the workflow list. Record ad platform billing: who receives invoices, the credit line and how prepayments apply (a prepayment raises the limit rather than lowering the balance), and who reconciles invoices against reported spend; a billing hold stops every campaign at once.
+
 **3h. Objects and properties.** **Settings → Objects** for each object; set the properties list to 100 per page before reading, because the default of 10 silently truncates. One row per object: type id, record count, created date, creator, which workflows write to it, which reports read it, whether a unique key exists, association types and labels, property groups, record customization, naming conventions. List the standard objects in play too (contacts, deals and their pipelines, tickets, calls, meetings, communications, marketing emails, forms, line items and payments, companies) and note which are unused.
 
 > ⚠️ **Lookalike properties are the most common trap.** Six "latest class" properties with near-identical labels, a calculated property that lags fifteen hours, a date held as text beside a real date, per-track date fields overwritten on the next registration, an owner property that another platform overwrites. Record each one now; Step 4's property diagnosis gives every property a verdict.
@@ -221,7 +223,7 @@ Pull the full list with creators (the API has no creator field): the signed-in s
 
 Flag: any workflow ON with zero enrollments in 30 days; any OFF workflow a live process depends on; any trigger of "form submitted any number of times" with re-enrollment on (that is how duplicate attendance records get made); any "Unnamed" workflow; any workflow whose only enrollment method is "enrolled by hand"; any backfill still ON.
 
-**3k. Forms, pages and modules.** **Marketing → Forms**, **Marketing → Landing Pages**, **Design Manager**. Per form: fields, hidden UTM fields, consent text, which workflows trigger on it, spam protection, the pages it sits on. New-editor form definitions are readable from the signed-in session at `/api/hubspot-forms/v2/form/<guid>?portalId=<id>`; legacy forms from `/api/forms/v2/forms?portalId=<id>`. Per live funnel page: full URL, content id, template, Head HTML blocks, modules, form ids, payment links, pixels. List every Design Manager asset that holds logic (order modules, redirect modules, site header HTML, coded files loaded from Head HTML, modules that read a configuration record).
+**3k. Forms, pages and modules.** **Marketing → Forms**, **Marketing → Landing Pages**, **Design Manager**. Per form: fields and which are required (a phone made optional cuts SMS reach for everyone who skips it), hidden UTM fields, consent text, which workflows trigger on it and which branch matches on its name, spam protection, the pages it sits on. New-editor form definitions are readable from the signed-in session at `/api/hubspot-forms/v2/form/<guid>?portalId=<id>`; legacy forms from `/api/forms/v2/forms?portalId=<id>`. Per live funnel page: full URL, content id, template, Head HTML blocks, modules, form ids, payment links, pixels. List every Design Manager asset that holds logic (order modules, redirect modules, site header HTML, coded files loaded from Head HTML, modules that read a configuration record).
 
 > ⚠️ **Check the served page with a throwaway query string, never the editor.** Pages behind a CDN can cache for hours. Count snippets in the DOM, not with grep over raw HTML, because inline scripts often contain comment markers that swallow real code. Pages that ship two copies of the same section for desktop and mobile carry every module id twice.
 
@@ -273,6 +275,8 @@ About two days.
 
 **5e. The configuration object.** If pages and workflows read a configuration record, check its date fields' types (only a datetime can be used for arithmetic) and that no active record's start time is in the past, because a past start time can redirect every new visitor to the old event.
 
+**5f2. Fields whose meaning changed on a date.** Some fields mean different things before and after a change: a first-touch field that was fed from traffic-source drill-downs until a workflow was remapped on a known date; a `utm_medium` convention that moved from a fixed value to the ad-group name, breaking every report that filtered on the old value; attendance records that carried no email or phone until an action was remapped, which broke the ad platform's matching and made attributed attendance collapse while receipt rose; attendance records that inherit the reminder session's UTMs rather than the acquiring source, so attendee channels must be read by joining back to the acquiring registration; a product renamed so that a report filtering on the old name undercounts; contacts whose emails were added as alternate emails on other contacts. Record the date for each and report on the field only from that date, or split the series.
+
 **5f. Reports people quote.** Every number that reaches leadership, agencies or sales in a normal week: who produces it, from which tool, with which filters, and whether a second person could reproduce it. Where two versions exist (Step 2 surfaces them), record both and the reason.
 
 ✅ **Check:** the trusted-numbers sheet has, for each metric, the exact query, the exclusions, the current value with its read time, and an owner.
@@ -304,6 +308,8 @@ About two days. Prove the system end to end on the events the business actually 
 
 Run each on a real recent record, read-only, and record pass, partial or fail with the record links.
 
+Three more scenarios belong on the table for most businesses: a product or tier sells out (what stops selling, where, and how long the gap is), the week of a live event (freeze, testing days, owners per system, daily check-ins, backup checkout links), and an ad platform billing hold (what stops, who is alerted first, how prepayments show in the balance).
+
 ✅ **Check:** every scenario has a verdict and a record link, and the list of scenarios with no owner who would notice a failure is written down.
 
 ### Step 8. The measurement chain
@@ -334,6 +340,8 @@ About two days. Know what one leaked credential, one departure or one deprecatio
 - API limits: daily call volume against the portal limit; the search API's rate limiting under scripted counts; which integration would fail first.
 - Monitoring: list what would page a person today. Usually nothing does.
 
+- Continuity: backup checkout links; a switchover plan for a second processor account; weekend coverage for the agency and the team; a restricted read key for an agency that wants to reconcile against the CRM itself (one key per consumer, named for them); who checks the ad platform credit line and prepayment schedule each week.
+
 ✅ **Check:** the risk register has likelihood, impact, blast radius and a proposed owner on every row.
 
 ### Step 10. Operations and process
@@ -346,6 +354,8 @@ About a day. Understand the recurring work the system demands and whether it can
 - Documentation state: header comments in pasted code are often the only documentation that travels with it; which live workflows have no doc anywhere; whether workflow and property descriptions are filled in inside HubSpot.
 - Change control: is there a "build doc before building" rule, and does anyone besides its author follow it. HubSpot's only change history outside workflow revisions is the audit log.
 - Meeting cadence that drives changes, and training: who has had HubSpot training, who holds a certification, what a new rep or marketer is shown on day one.
+
+- Event-week rhythm, reusable for every live event: a setup freeze two business days before, two days of testing, no open phone-platform issues going into the week, email and SMS sending coordinated through one person, check-ins three times a day, and a named escalation for each system when its owner is on stage.
 
 ✅ **Check:** a RACI exists for every workflow family and every integration, and the manual steps that should be automated or checklisted are listed.
 
@@ -371,6 +381,8 @@ About two days. Turn findings into a prioritized plan the team can approve.
 **11c. Roadmap.** Three buckets: stabilize (first 30 days: owners for orphaned assets, ownership reassignment in the right order, one key per coded action starting with the shared one, monitoring for the silent integrations, backfills off, the worst trigger fixed); make numbers trustworthy (30 to 60 days: unique keys enforced, the fact table, refunds written back, test rows excluded, the property merges and type fixes); reduce dependency (60 to 90 days: API version migration, personal tokens into a shared vault or system users, legacy platform retired in order, a request queue, a second person trained on the recurring cycle).
 
 **11d. Keep a known-items list.** Every defect found becomes a row with the date found, the evidence, and the fix's build doc id. The next person starts from this list instead of rediscovering it.
+
+Seed it from four places besides your own findings: the open-items table at the end of any implementation guide (fields left blank at launch, branches that differ from their siblings, trigger lists with raw ids), the open-decisions list of any live plan (targets never answered, builds half done, incidents awaiting a backfill), the workflows with custom code or outbound webhooks whose purpose nobody can state (open them and record what they do before anything depends on them), and the pending builds with a doc awaiting review.
 
 ✅ **Check:** the scorecard, the risk register and the roadmap are in one document the team can comment on, and every respondent from Step 2 has heard what their answers led to.
 
@@ -403,6 +415,17 @@ About two days. Turn findings into a prioritized plan the team can approve.
 - HubSpot's IP Timezone property is a slug (`america_slash_new_york`), not an IANA name.
 - Hardcoding a fixed UTC offset breaks on the first Sunday of November.
 - A browser window in portrait orientation breaks HubSpot's rendering in ways that look like product bugs.
+
+Traps met while installing a ticket-pipeline request queue through the API, worth knowing before any API build:
+
+- A form created over the API does not create tickets, even with ticket fields on it; only the new form editor's ticket setting does, or a workflow that reads the submission.
+- Forms cannot write HubSpot owner properties; "requested by" has to be a plain dropdown.
+- Pipeline stage order has to be set in one pipeline PUT; patching stages one at a time renumbers the rest and scrambles the board.
+- Ticket pipeline limits depend on the Service Hub tier; a limit error is a plan problem, not a payload problem.
+- In the v4 workflow format the "otherwise" path of a branch is a `defaultBranch`, not a connection; a workflow can have the right number of actions and still be wired wrong.
+- API readbacks of workflows can be incomplete; trust a smoke test with a real record over an action count.
+- Tasks attach to a ticket through association type 18 (enrolled object); Slack actions fail to create until the HubSpot Slack app is connected.
+- A 200 or 202 is not proof; read the value back.
 
 ## Troubleshooting
 
