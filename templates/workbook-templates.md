@@ -289,3 +289,27 @@ system_or_store,data_type_card_bank_bnpl_financial,how_it_got_there,full_or_part
 ```csv
 control,category_admin_or_physical,exists,owner,last_done,evidence,gap
 ```
+
+## Lead score inventory (Step 3i2)
+
+```csv
+score,type_fit_engagement_combined_predictive_selfreported_counter,source_system,editable,inputs,caps,decay,thresholds,action_per_threshold,used_in_lists_reports_routing,owner,last_validated,verdict
+```
+
+## Score band validation (Step 3i2)
+
+```csv
+score,band,contacts,handoffs_90d,call_booked,deposit,closed_won,conversion_rate,false_positives,false_negatives,lift_vs_bottom_band,verdict
+```
+
+## Pipeline stage scorecard (Step 3i3)
+
+```csv
+pipeline,stage,order,deals,amount,buyer_commitment_not_rep_activity,exit_criterion_written,exit_criterion_property,required_properties,win_probability_set,win_probability_observed,moved_by,stale_limit_days,stale_deals,verdict
+```
+
+## Pipeline hygiene (Step 3i3)
+
+```csv
+pipeline,check,count,read_at,example_deal_ids,owner,action
+```
