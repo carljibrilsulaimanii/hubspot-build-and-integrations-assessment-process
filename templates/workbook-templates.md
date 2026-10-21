@@ -313,3 +313,15 @@ pipeline,stage,order,deals,amount,buyer_commitment_not_rep_activity,exit_criteri
 ```csv
 pipeline,check,count,read_at,example_deal_ids,owner,action
 ```
+
+## Email suppression census (Step 3d2)
+
+```csv
+group,rule,contacts,share_of_database,read_at,false_negatives_from_previous_platform,decision,owner,next_census_date
+```
+
+## Per-email suppression setting audit (Step 3d2)
+
+```csv
+email_name,type_marketing_or_automated,send_date,unengaged_box_ticked,list_size,audience_reached,delivered,opened,gap
+```
