@@ -265,3 +265,27 @@ disclosure_item,required_by,policy_says,stack_does,match,gap
 ```csv
 object,property_or_store,category,hipaa_relevant,marked_sensitive,who_can_read,copied_to_systems,in_exports,in_webhooks,in_ai_tools,agreement_in_place,gap
 ```
+
+## HIPAA safeguards per system (Step 9b)
+
+```csv
+system,holds_or_passes_contact_data,baa_available,baa_signed,encryption_in_transit,encryption_at_rest,unique_accounts_no_shared_logins,two_factor_enforced,least_privilege_roles,admin_review_date,audit_log_access,audit_log_exports,record_views_logged,data_minimization_fields_carried,retention_and_deletion_path,backups,session_timeout,breach_notification_terms,subprocessors_and_location,same_day_offboarding,score,evidence,gap
+```
+
+## HIPAA hop-by-hop trace (Step 9b)
+
+```csv
+hop,from_system,to_system,mechanism,fields_that_travel,sensitive_field_possible,receiving_system_score,breaks_compliance,what_closes_it,owner
+```
+
+## Banking and payment data register (Step 9b)
+
+```csv
+system_or_store,data_type_card_bank_bnpl_financial,how_it_got_there,full_or_partial,who_can_read,in_pci_scope,in_recordings_or_transcripts,retention,what_closes_it,owner
+```
+
+## HIPAA administrative and physical (Step 9b)
+
+```csv
+control,category_admin_or_physical,exists,owner,last_done,evidence,gap
+```
