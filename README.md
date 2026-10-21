@@ -211,11 +211,15 @@ About a week. One workbook tab per area; every row gets an owner and a status (l
 
 **3b. Seats and licences.** **Settings → Account & Billing**: for every seat type, seats bought versus assigned, cost per seat, the renewal date, who approves a new seat. Check each paid seat against what the person actually does: a rep who lives in the phone platform does not need a Sales Hub seat; a support person who replies from a shared Gmail does not need a Service Hub seat; a Commerce seat is odd when money runs through the payment processor's links. Record the contact tier and marketing-contacts count, every add-on, and the seat counts in the other per-seat tools.
 
+Marketing contacts are a billing lever: find the workflow or setting that makes new contacts marketing contacts, count them against the tier, name the sources that should not be billable (SMS-only registrants, support-only contacts, test identities), and name who reviews the count before renewal.
+
 **3c. Domains and website.** **Settings → Domains & URLs** and **Settings → Tracking Code**. One row per host: platform (HubSpot, legacy CRM, payment processor, community platform, main site), role, DNS host, SSL state, redirects, primary-domain status, tracking code and tag manager container present, cookie banner setting, who can add a subdomain.
 
 > ⚠️ **One letter can change the platform.** In the portal this came from, the plural form of a subdomain was the legacy CRM and the singular form was HubSpot. Check the spelling before concluding anything about a page.
 
 **3d. Email.** **Settings → Marketing → Email**, subscription types, connected inboxes, email health. Record sending domains and their DKIM, SPF and DMARC state; dedicated IP; subscription types and which forms and lists map to each; double opt-in; footer address; bounce and unsubscribe rates for 90 days; who sends marketing email now; transactional email add-on; templates, snippets and sequences in use. Record where inbound customer email actually lands: in the portal this came from, it went to shared Gmail mailboxes, so support's replies were not in the CRM at all.
+
+Also record whether the transactional email add-on is enabled (receipts, welcomes and confirmations depend on it), the dedicated sending domain's standing with the mailbox providers, and any recent open-rate drop with whether it was deliverability or measurement.
 
 **3e. SMS.** If HubSpot's own Calling and SMS settings are empty, every text goes through the phone platform. One row per line: number or name, type (10DLC, toll-free, short code), registration state, the inbox and AI agent it routes to, which HubSpot inbox channel it feeds, opt-out handling, quiet hours, consent capture on forms, the Terms of Use sections that describe the program, send rates, and the workflows that use the platform's "send a text" action. Record throughput (messages per second per line and per account) and the sequence throttle.
 
@@ -230,6 +234,8 @@ About a week. One workbook tab per area; every row gets an owner and a status (l
 > ⚠️ **Lookalike properties are the most common trap.** Six "latest class" properties with near-identical labels, a calculated property that lags fifteen hours, a date held as text beside a real date, per-track date fields overwritten on the next registration, an owner property that another platform overwrites. Record each one now; Step 4's property diagnosis gives every property a verdict.
 
 **3i. Pipelines and deals.** **Settings → Objects → Deals → Pipelines**. For every deal pipeline and ticket pipeline: stages and their win probabilities, which workflows move records between stages, which fields hold outcomes, how owners are assigned (round robin, activity-based attribution, manual rotation), forecast settings, amount conventions (placeholders, upgrade deals carrying only the upgrade price). Count deals per stage with the read time.
+
+Lifecycle stage and lead status: record the values in use, who or what sets each, and any temperature mapping. If they change only when a rep moves a deal and reps do not move deals, both are dead for most contacts, and the sales team's requests (a status that flips on a rep's first text; an owner for every contact who texts in, assigned in the phone platform so it copies back) belong on the backlog.
 
 > ⚠️ **A stage nothing moves deals into stays empty and nobody notices.** In the portal this came from, the enrollment pipeline's post-call stages were never set by any workflow; outcomes went to deal fields and a separate appointment object, and the board showed a placeholder amount times the number of booked calls as "pipeline value". A stage weighted at 10% that holds paid deals undervalues the forecast by the same amount.
 
@@ -256,6 +262,10 @@ Flag: any workflow ON with zero enrollments in 30 days; any OFF workflow a live 
 **3p. Automation that runs outside HubSpot.** One row per Apps Script project, ad-platform script, legacy-CRM workflow family and phone-platform automation: runtime, trigger, what it writes into HubSpot, owner, last successful run (the project's Executions page, the workflow list's enrolled count).
 
 **3p2. Message assets, archive candidates, timezones and vendor terms.** Message assets (marketing emails, SMS templates and sequences, CRM sequences, a bot's knowledge base) are customer-facing and drift: for each, still scheduled or live, the date it references, every link resolved, tokens that render blank, unsubscribe and STOP handling, the sender. Archive candidates beyond properties: workflows OFF for 90 days with no dependency or unnamed, lists nothing uses, stale cloned and test pages, forms with no submissions in 90 days, sequences nobody sends; output a list with the evidence that nothing depends on each. Timezones per system (portal time, the search API in UTC, the processor in UTC, each ad platform in its own, the phone platform's schedules) in one table. Vendor engagement terms for every agency and consultancy: contract end, service levels, weekend coverage, relationship owner, access held.
+
+**3p3. Backlog and in-flight work audit.** The team's own task tracker is evidence of what is unbuilt, half-built or stuck. Pull every open task in the migration and event projects and classify each: unbuilt, half-built (a build doc or draft exists), blocked (on a vendor, a decision or a person), overdue, stale (no update in 30 days). Map each to the system and the journey it touches. Overdue and stale rows are findings; blocked rows go on the risk register with what unblocks them. Keep a vendor change-notes log alongside it: a vendor's product change (a line removal ending held conversations; a follow-up switch cancelling scheduled ones) explains a mystery a month later.
+
+**3p4. Customer journeys inventory.** The mystery shopper (Step 7) walks one journey; this inventories all of them. One row per journey a customer can be on: trigger, the system that runs it today, the workflow or sequence id, on or off, last send, the messages and their senders, the owner. A journey whose trigger lived on a retired platform fails silently: in the portal this came from, the new-member onboarding workflow went dark at a platform switch and every new paying member for three weeks got no welcome. Journeys to confirm, each with a live trigger: registration confirmation and reminders; event-night links; replay; new member welcome; purchase confirmation and post-purchase nurture; upgrade pushes; physical welcome mail; abandoned cart per product; failed payment and dunning; video-sales-letter sequences; application confirmation and follow-up (and every document that links to the application form); call booking, reminders and no-show follow-up; subscription cancel and win-back; support replies; opt-out acknowledgement.
 
 **3q. Limits, governance and hygiene.**
 
@@ -312,6 +322,8 @@ About two days.
 
 **5e3. Month-end money reconciliation and phone-only contacts.** Once a month four numbers must agree or the differences be explained: the processor's payouts and refunds, the mirror object's succeeded rows, the business purchase records, and finance's ledger; expect refunds never written back, test rows, comps with no payment intent, invoices with no payment link, double checkouts. Count contacts with a phone and no email and with an email and no phone; they break email-keyed dedupe and decide whether a form's phone may stay optional.
 
+**5e4. Identity model and migration completeness.** The CRM keys a person on email, the phone platform on phone, the processor on whatever the buyer typed; the portal this came from carried about 94,000 potential duplicates with no merge rule, a mistyped checkout phone overwrote a contact's number in the phone platform, and a new email with the same phone made a second contact. Write the identity rules: the identifying field per system, which system wins per field when they disagree (a precedence matrix for name, email, phone, owner, address), phone normalization, alternate-email handling, what a merge does downstream, who runs the duplicates tool and how often. Then reconcile migration completeness per cohort: legacy contacts and tags against CRM contacts and properties, community members against the CRM, legacy payments and invoices against the mirror, course-progress and member-temperature fields. A cohort that cannot be matched is a finding, and the legacy shutoff waits for it.
+
 **5f. Reports people quote.** Every number that reaches leadership, agencies or sales in a normal week: who produces it, from which tool, with which filters, and whether a second person could reproduce it. Where two versions exist (Step 2 surfaces them), record both and the reason.
 
 ✅ **Check:** the trusted-numbers sheet has, for each metric, the exact query, the exclusions, the current value with its read time, and an owner.
@@ -334,6 +346,8 @@ About three days. For every integration: prove it is running today, find its sin
 | Community platform | Its one webhook URL and where it points; the objects the migration is building; the last-visited sync's last run | A script failure with no alert |
 | Native ad conversion events | Which survive, which have never synced, whether they duplicate the server-side event | A "never synced" event on a live form |
 | Inbox tagging workflows | The read-only key they use; the shared views exist; the recency guard is still on | A rotated key stops tagging with a 401 |
+| Inbox routing | An inbox conversation can show no owner while the contact shows the rep; a contact who texts in with no owner gets a rep, assigned in the phone platform so it copies back; support does not reply inside sales threads; blasts do not flood rep inboxes; whether a broadcast assigns an owner is known | Customers answered late because the thread was in the wrong inbox |
+| Phone platform open items | Every latency, queue, dialer, bot and attribution item raised with the vendor, with its age and status | Items raised for a month with no resolution recorded |
 
 ✅ **Check:** the integrations tab has pass or fail, a failure signal, and a "who gets paged" column for every row. If the answer is "nobody" for most rows, that is a Step 11 item.
 
@@ -346,6 +360,8 @@ Run each on a real recent record, read-only, and record pass, partial or fail wi
 Three more scenarios belong on the table for most businesses: a product or tier sells out (what stops selling, where, and how long the gap is), the week of a live event (freeze, testing days, owners per system, daily check-ins, backup checkout links), and an ad platform billing hold (what stops, who is alerted first, how prepayments show in the balance).
 
 And one scenario that is not a system event at all: the mystery shopper. Register a test identity from a tagged ad link, attend, buy, reply STOP to one text, and keep a diary for ten days of every email, text and bot message with its time, sender, resolved links, personalization, duplicates and gaps. Duplicates, dead links in templates and overnight texts are usually found by customers first.
+
+And one more: a platform is switched off. Every journey that triggered on it has a live trigger elsewhere before the switch, every document and page that linked to it is repointed, and the first customer event after the switch is watched.
 
 ✅ **Check:** every scenario has a verdict and a record link, and the list of scenarios with no owner who would notice a failure is written down.
 
@@ -446,6 +462,7 @@ About two days. Know what one leaked credential, one departure or one deprecatio
 - API limits: daily call volume against the portal limit; the search API's rate limiting under scripted counts; which integration would fail first.
 - Access hygiene: whether two-factor authentication or single sign-on is enforced for every user, which logins are shared, when access was last reviewed and by whom, and the contract renewal calendar for every platform in the stack (renewal date, notice period, owner).
 - Domains, DNS and certificates: who holds the registrar and DNS login, when each domain renews, whether auto-renew is on, when each certificate expires.
+- Every deprecation on one calendar: CRM API versions by key, the processor's API version pinned by old callers, ad platform token cycles, OAuth app states, vendor product changes that alter behaviour, connector scopes. One owner, a reminder 90 days ahead of each.
 - Monitoring: list what would page a person today. Usually nothing does.
 
 **The minimum alert set.** "Monitoring: none" is a finding; propose the fix with it. Ten alerts, each with the signal, the check and who is paged: payment sync stopped (mirror rows created today versus the processor's succeeded payments today); a conversion workflow erroring (workflow error notifications routed to a shared channel, not one inbox); guard stamps falling to zero on an event night; an ad platform token's expiry on a calendar a week ahead; an OAuth refresh token's first failure; an ad-platform script's last run older than 36 hours; an Apps Script failure; the credit line's headroom under one week of spend; webhook delivery failures at the processor; a backfill workflow still ON a week after it should have finished.
@@ -474,6 +491,8 @@ About a day. Understand the recurring work the system demands and whether it can
 - Service levels: speed to lead, reply time on messages that need a person, the agency's page-change turnaround, and who measures each.
 - A decision register: one row per design decision that shapes the build, with date, decider, where it is recorded, and whether it still holds.
 - A glossary of the lookalike terms (event date versus session versus start time; registration versus attendance versus replay records; first touch versus last touch; tier names and prices; the bots' names; the duplicate accounts).
+- A vendor performance review: a scorecard per vendor with open tickets and their age, what the contract promised, what was delivered, slipped dates, and the relationship owner on each side; reviewed monthly and brought to an accountability session.
+- Training assets and the new-caller setup: every recording and guide inventoried, and a standard setup for a new caller or rep (accounts, lines, lists, scripts, where notes go, who to ask).
 - A change gate for outside parties: one intake, one release checklist per change type (pages: Step 8c; ad templates: Step 8b; workflows: a build doc), and a day-one checklist for every new rep or marketer.
 
 ✅ **Check:** a RACI exists for every workflow family and every integration, and the manual steps that should be automated or checklisted are listed.

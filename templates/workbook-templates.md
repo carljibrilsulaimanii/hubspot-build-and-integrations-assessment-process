@@ -187,3 +187,27 @@ item,type,last_used,dependencies_checked,evidence_nothing_depends,verdict,owner
 ```csv
 timestamp_local,user,category,action,asset_name,asset_id,before,after,explained_by,flag
 ```
+
+## Backlog audit (Step 3)
+
+```csv
+task,owner,system,journey,status_unbuilt_halfbuilt_blocked_overdue_stale,due_on,last_update,blocked_on,finding
+```
+
+## Customer journeys (Step 3)
+
+```csv
+journey,trigger,system,workflow_or_sequence_id,on_off,last_send,messages_and_senders,owner,dark_trigger
+```
+
+## Identity precedence (Step 5)
+
+```csv
+field,hubspot_source,phone_platform_source,processor_source,winner_when_they_disagree,normalization,notes
+```
+
+## Vendor scorecard (Step 10)
+
+```csv
+vendor,open_tickets,oldest_ticket_days,promised,delivered,slipped_dates,relationship_owner_ours,relationship_owner_theirs,next_review
+```
