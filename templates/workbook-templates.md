@@ -317,7 +317,7 @@ pipeline,check,count,read_at,example_deal_ids,owner,action
 ## Email suppression census (Step 3d2)
 
 ```csv
-group,rule,contacts,share_of_database,read_at,false_negatives_from_previous_platform,decision,owner,next_census_date
+group,rule,contacts,share_of_database,read_at,decision,owner,next_census_date
 ```
 
 ## Per-email suppression setting audit (Step 3d2)
