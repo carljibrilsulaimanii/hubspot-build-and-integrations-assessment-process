@@ -33,6 +33,8 @@ Built by [Jibril Sulaiman](https://github.com/carljibrilsulaimanii).
   - [Step 6. Integration health, one at a time](#step-6-integration-health-one-at-a-time)
   - [Step 7. Scenario walkthroughs](#step-7-scenario-walkthroughs)
   - [Step 8. The measurement chain](#step-8-the-measurement-chain)
+  - [Step 8b. Tracking and attribution QA](#step-8b-tracking-and-attribution-qa)
+  - [Step 8c. Funnel page QA](#step-8c-funnel-page-qa)
   - [Step 9. Security, access and resilience](#step-9-security-access-and-resilience)
   - [Step 10. Operations and process](#step-10-operations-and-process)
   - [Step 11. Score it, register the risks, write the roadmap](#step-11-score-it-register-the-risks-write-the-roadmap)
@@ -74,6 +76,8 @@ Eleven steps, worked in order. Each has a goal, says exactly where to look, list
 | 11. Score and roadmap | What gets fixed first? | Scorecard, risk register, 30/60/90 plan |
 
 Two lenses apply. The admin's own lens leads Steps 3 to 8 and 10: what exists, is it trustworthy, does it run, can it be handed over. The CTO's lens leads Steps 1, 2, 9 and 11: what are the rules, what would a CTO ask, what would one failure take down, what gets fixed first. Step 2 holds the CTO's questions; the admin owns producing their answers.
+
+**If you have five days, not five weeks.** Day 1: the rules, access, and send the survey. Day 2: the integrations pages walk, the keys and secrets map, the workflow list with on/off and errors. Day 3: the trusted-numbers sheet for the five numbers leadership quotes, and the counting rules. Day 4: the tracking QA (Step 8b) on one funnel end to end, and the three scenarios that touch money (self-serve purchase, refund, payment sync stops). Day 5: the risk register and the first thirty-day list. Everything else waits.
 
 ## What's in this repo
 
@@ -154,6 +158,8 @@ About half a day.
 4. Write times in the business's timezone. An event at 7 PM local is the next calendar day in UTC, and a UTC date in a report moves it a day.
 5. Never record a secret, token or key value anywhere. Prefixes and key ids only.
 6. Send nothing outbound (email, Slack, SMS) from the assessment. Draft, show, wait.
+
+**Test-data discipline.** Every end-to-end test leaves records. Before the first one: agree a test identity (an email on a qa+ alias and a test phone), add every internal and test email to the exclusion list reports already use, run page tests in a private window so cookies start empty, never run a processor test in live mode except with a $1 QA product that is refunded afterwards, and mark test-mode mirror rows so they are excluded everywhere. Log every test record you create with its id so it can be found and deleted.
 
 **1b. Access.** Fill the access table: one row per system (HubSpot, phone and SMS platform, payment processor, each ad platform, community platform, legacy CRM, Google Workspace, task tracker, chat tool), with the role you were given, who granted it, and the date.
 
@@ -239,6 +245,17 @@ Flag: any workflow ON with zero enrollments in 30 days; any OFF workflow a live 
 
 **3p. Automation that runs outside HubSpot.** One row per Apps Script project, ad-platform script, legacy-CRM workflow family and phone-platform automation: runtime, trigger, what it writes into HubSpot, owner, last successful run (the project's Executions page, the workflow list's enrolled count).
 
+**3q. Limits, governance and hygiene.**
+
+- **Limits and headroom.** HubSpot caps things silently. Record the current count against each cap: properties per object, active lists, workflows, custom objects and records per custom object, custom code actions and their 20-second timeout, webhook trigger definitions (50 properties), search results (10,000 per query; split by day), daily API calls, and the search API's rate limiting. Anything above 70% of a cap goes on the risk register with the date it will be hit at the current rate.
+- **Messaging governance.** When blasts, an AI agent, reps, CRM sequences, phone-platform sequences and marketing email can all reach one contact, write the matrix of who may message a contact on a given day, in what order, with what frequency cap, and which suppression wins (opt-out, open rep conversation, booked call, a purchase in the last 24 hours). An unwritten matrix is how an agent texts into a live rep chat.
+- **Calendar hygiene.** Every rep's calendar connection (a disconnected calendar makes a booking return success with nothing created), every round robin and its members, every personal link still in use, and who owns each link when its rep leaves.
+- **Error routing.** HubSpot emails workflow errors, Data Sync errors and connected-app failures to someone; the processor emails webhook failures; Google emails script failures. Record who receives each, whether they read them, and what happens when that person leaves.
+- **Source control.** Every custom code action, module and Head HTML block lives in a HubSpot text box with no history beyond workflow revisions. Record which pieces have a copy anywhere else, and recommend one private repository where the live version of each is kept with its deploy location.
+- **Naming conventions.** Record the conventions in use and the ones nobody follows; propose one standard for new properties, workflows and lists.
+- **Backfill log.** Every one-shot backfill that ran (what it changed, when, with which key, whether it is off now). A backfill still on is a writer nobody expects.
+- **Legacy platform decommission.** Before the legacy CRM goes dark: export contacts with tags, conversations, payments and invoices, workflow definitions and page HTML; name where the export lives and who can read it; list the paths and short links still pointing at it.
+
 ✅ **Check:** every tab has an owner and a status on every row, and the keys-and-secrets tab has no "unknown" row you have not tried View Logs on.
 
 ### Step 4. Generate the three artifacts
@@ -277,6 +294,8 @@ About two days.
 
 **5f2. Fields whose meaning changed on a date.** Some fields mean different things before and after a change: a first-touch field that was fed from traffic-source drill-downs until a workflow was remapped on a known date; a `utm_medium` convention that moved from a fixed value to the ad-group name, breaking every report that filtered on the old value; attendance records that carried no email or phone until an action was remapped, which broke the ad platform's matching and made attributed attendance collapse while receipt rose; attendance records that inherit the reminder session's UTMs rather than the acquiring source, so attendee channels must be read by joining back to the acquiring registration; a product renamed so that a report filtering on the old name undercounts; contacts whose emails were added as alternate emails on other contacts. Record the date for each and report on the field only from that date, or split the series.
 
+**5e2. Acceptance thresholds and sampling.** A check without a number is an opinion. Set a threshold for each measure before you read it, from the baseline your first read establishes, and investigate anything past it: registrations with no UTM per day, purchase records with a blank or junk first-touch field, last touch disagreeing with the processor's source, records the attribution fill skipped, contacts with a duplicate email or phone, the share of mirror rows that succeeded, attendance records with no email, workflows with errors in seven days. One portal's baseline, for scale: untagged registrations 14 to 23% a day (investigate above 25%), blank first touch on purchases 22.6% (investigate a rise of 3 points), junk 0 (investigate any). A property-history sample of five records proves nothing on a portal with hundreds of thousands of contacts: sample at least 30 per writer and per period, picked by random record id. Search results cap at 10,000, so split by day; the search API's equality filter is case-insensitive, so count case variants in code.
+
 **5f. Reports people quote.** Every number that reaches leadership, agencies or sales in a normal week: who produces it, from which tool, with which filters, and whether a second person could reproduce it. Where two versions exist (Step 2 surfaces them), record both and the reason.
 
 ✅ **Check:** the trusted-numbers sheet has, for each metric, the exact query, the exclusions, the current value with its read time, and an owner.
@@ -288,7 +307,7 @@ About three days. For every integration: prove it is running today, find its sin
 | Integration | Test | Failure signal |
 |---|---|---|
 | Payment processor Data Sync | Connection id, sync status and last sync time per object; compare the last 24 hours of succeeded payments in the processor to mirror rows by payment id | Downstream workflows' enrollments drop to zero while the processor keeps charging; nobody is alerted |
-| Processor webhooks into workflows | List every destination, its events and delivery success; confirm every handler re-fetches by id and treats the body as a pointer (a webhook-trigger URL has no signature check); confirm no secret field was kept when the definition was pruned to the 50-property cap | Webhook delivery failures in the processor's dashboard |
+| Processor webhooks into workflows | List every destination, its events and delivery success; confirm every handler re-fetches by id and treats the body as a pointer (a webhook-trigger URL has no signature check); confirm no secret field was kept when the definition was pruned to the 50-property cap; confirm every handler is safe to run twice, because the processor retries anything that does not answer 2xx; read each code step's own status output, because HubSpot's log can say success on a 429 | Webhook delivery failures in the processor's dashboard; stamps missing on records the log calls successful |
 | A private app that writes business records | Its API call logs: creates in the last 24 hours, no 400s; who built it and whether a second person can maintain it | Business records stop being created |
 | Phone and SMS platform | Sync direction and field mappings; which platform's owner wins; inbox open and unassigned counts after a blast; each line's inbox and agent; throughput; whether the platform writes stale "last inbound" dates on first sync (every trigger on that field needs an "is today" guard) | Replies pile up unassigned; a trigger fires on a stale date |
 | AI booking bridge | Trace one booking end to end: the function, the form, the workflow, the meeting link and its round-robin members, the confirmation text; the meeting type stamp | A disconnected rep calendar returns success with nothing created |
@@ -324,6 +343,75 @@ Rules that survived the arguments with the agencies: judge budget moves on purch
 
 ✅ **Check:** the chain diagram has a capture rate at every hop, and the hops with no owner are listed.
 
+### Step 8b. Tracking and attribution QA
+
+About two days per funnel the first time, half a day on repeat. Prove, with tests rather than theory, that a source survives every link of the chain: the ad URL, the site header and its cookies, the form's hidden fields, the contact, the business record, the order page, the processor, the purchase record, the pixel and the server-side events. A blank UTM has at least five different causes in five systems; the job is to find which link lost it. Run this on every funnel after every page clone, header edit, workflow change or ad template change, and on a schedule during a campaign.
+
+**8b-1. Site header and cookies.**
+1. Check the site header HTML on every domain in the settings dropdown, not one: a sitewide header can be overridden per domain. Fetch one live page per domain with a cache-busting query and confirm the header script is in the served HTML.
+2. In a private window with devtools open, load a funnel page with `utm_source=qa&utm_medium=qa&utm_campaign=qa&utm_content=qa&utm_term=qa&fbclid=qatest`. Record every cookie the header writes (name, domain, expiry, value shape), plus the ad platform cookies and the HubSpot visitor cookie.
+3. Test the rollover rules one at a time: a second tagged visit (does the stash replace or keep the first touch, and which field records the capture method); an untagged visit (does the cookie restore the UTMs into the hidden fields); a return from the processor carrying only the five `utm_*` (does the guard keep the click ids); a value with a dot, a pipe or a plus (the processor's URL rules allow only letters, digits, underscore and hyphen; the module must clean them and the guard must compare cleaned values); keys starting with an underscore (should be skipped on the way out).
+4. Vanity redirect pages: hold the redirect with a preview parameter and read the resolved target; a client-side redirect makes the destination see the vanity page as referrer, so the real platform survives only through an entry cookie.
+5. In-app browsers: an ad clicked inside a social app and a purchase made later in another browser share no cookie, so the checkout looks like a direct visit. Read the click id and the prefilled email on the session to tell the cases apart. The fix is tagging texts, sequences and reps' links, not the page.
+
+**8b-2. Forms.**
+1. Read every registration form's definition, not one page's DOM: each must carry hidden `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` and `utm_term` filled from the page URL. Retire forms with one packed field.
+2. Submit the test identity through each form from the tagged page and read the submission's page URL and the contact's `utm_*` afterwards. An untagged record whose page URL had no `utm_` is an untagged visit, not a broken page; one whose page URL had `utm_` and whose record is blank is a broken hidden field or mapping.
+3. Confirm which fields are required and that consent text is present on every form.
+
+**8b-3. Contact and business record.**
+1. On the test contact: the live `utm_*`, the frozen registration-time copy, the Original Traffic Source and its drill-downs. Note why paid traffic files where it does.
+2. Pull the writing workflow's JSON (Step 3j) and confirm every Create record branch maps last touch from the contact's live UTMs and first touch from the code step, and that no branch maps `hs_analytics_source_data_1` or `_2` into a UTM field. Source, medium and campaign move together from one record.
+3. Search records created since the last fix for junk in the first-touch field (an import marker, an all-digit id, a GUID, a domain, a value with `/`, `|` or `{{`, over 40 characters). Any hit is a regression.
+
+**8b-4. Order page, processor and purchase record.**
+1. On the order page with the cookie set, read the payment link the module builds and confirm it carries the cleaned `utm_*` and no underscore keys.
+2. Complete a checkout with the $1 QA product (then refund) or read a recent real session: the session's success URL carries `utm_*`; the mirror row gains its UTM fields and a capture method; a payment with no payment link id is a renewal or invoice and can never carry a UTM, so inherited fields must cover it.
+3. On the purchase record after the fill runs: first touch from the acquiring registration (the most recent event held by the purchase date, earliest sign-up within it), last touch equal to the processor's source, the event name from the event topic, and the fill's timestamp. A blank timestamp older than the fill's delay means it did not run; read the action's own status output.
+4. Any second purchase object (kits, add-ons) has its own coverage; a coverage gap is not a tagging gap.
+
+**8b-5. Pixels, tags and server-side events.**
+1. On every funnel page, in devtools, list the events that fire on load and on submit and what each carries. Expected baseline: page views only in the browser through the tag manager container, no inline purchase event anywhere when purchases go server-side, and the Event Setup Tool holding zero rules.
+2. Count snippets in the DOM, not with grep over raw HTML, and read the context: a match inside a comment that documents a removed call is not a live call.
+3. For every server-side event: the workflow is on, the test code is detached, the guard property stamps, the event id is stable (the payment intent for Purchase; something current at trigger time for attendance, never a calculated property that lags), and the match keys include a hashed email and phone. Browser and server dedupe only within 48 hours and only on a shared event id.
+4. The lead event as a release gate: after any funnel deploy, read the dataset's hourly stats by event and by host. Page views up and leads flat on the new host means the lead sender died with the swap.
+5. Consent: load with the cookie banner declined and record which tags still fire; decide whether that is intended.
+
+**8b-6. Ad URL templates and naming.**
+1. Read the URL template on every platform and search contacts for literal, unexpanded macros (`{{ad.id}}`, `{{site_source_name}}`): any hit is a live ad with a broken template.
+2. Keep one registry of source and medium values and their meaning, with the date each convention changed, and group one platform's many labels in every report.
+
+**8b-7. Baselines.** Write a repeatable health check over a window: blank and junk rates, last touch equals the processor's source, untagged registrations per day, inherited coverage, and whether every page carries the header, the fallback and the module. The thresholds from Step 5 say when a reading is a problem. Re-measure after every change, and say plainly which share is an honest unknown (buyers who never registered, untagged visits, other-browser checkouts).
+
+> ⚠️ **Never overwrite a raw capture.** The processor's UTMs and a real last touch are evidence. Inherited or derived values go in their own fields with a note on their basis. And never map a UTM field straight from HubSpot's traffic-source drill-downs; parse them in code with the junk rules.
+
+✅ **Check:** the chain has pass or fail per link, the cookie and event inventories exist per domain and page, the junk and blank rates sit against their thresholds, and every fix names the layer it belongs to (page, form, workflow, processor, ad template).
+
+### Step 8c. Funnel page QA
+
+About half a day per funnel. Every page a customer can reach does what the spec says, charges the right thing, sends the buyer to the right place, and shows the same thing on desktop and mobile. The method is the public [hubspot-funnel-qa](https://github.com/carljibrilsulaimanii/claude-code-skills/tree/main/skills/hubspot-funnel-qa) skill, folded in so pages are checked the same way every time. Its value collapses if a finding is wrong: a false blocker sends the page team chasing a closed item. Verify; never infer.
+
+**8c-1. Establish the standard before you look.** The spec document for the funnel (a v2 usually carries only deltas, so v1 still holds things like the date line; check which version the build team received); the event date taken explicitly from the run of show, never inferred, with weekday names verified against the calendar; the naming standard for slugs and step titles; the pixel standard; the brand guide; and the product checklist that maps every payment link id to a product and price. Without a spec, audit for defect classes only (dead buttons, stale years, drift between pages) and say so.
+
+**8c-2. Crawl, then verify what a crawl cannot see.** Fetch every page from one same-origin browser tab (titles, meta, dates, links and payment-link ids in one pass, always with a cache-busting query). Three things are invisible to fetched HTML and each has produced a wrong finding: pixels, which HubSpot injects at runtime (check that `fbq`, `ttq` and `gtag` are defined on a loaded page); hosted checkout pages, which render client-side (load the link in a browser to see product, price and any bump); and anything behind a trigger (accordions, step-2 panels and pop-ups exist in the DOM before they are visible; search the raw HTML before calling copy missing). Confirm the viewport is landscape and non-zero before trusting any measurement.
+
+**8c-3. The checks, in order of damage.**
+1. **Can a customer complete the action?** Enumerate every link and button; flag any with no `href` or `href="#"` (HubSpot labels them "Link not set, button inactive"). Then resolve every destination: a button pointing at a 404 or the wrong product passes a presence check and still loses the sale. Some platforms return 200 with the funnel's first page for an unknown path, so check the page title, never the status code.
+2. **Does it charge the right thing?** Look up every payment link id in the product checklist; report product and price, not the id. A test-mode link looks like a checkout and takes no money.
+3. **Does the processor work end to end?** Which link the order module actually sends people to, whether a choice on the form changes it, test or live, product and price, and where the processor sends the buyer afterwards: a link set to the processor's hosted confirmation never returns anyone to the funnel's confirmation page, so the booking button, the next-steps copy and the UTM capture there silently never happen. An optional order bump is not a forced bump; a page without one is not a defect.
+4. **Dates.** Every date string on every page against the standard, with weekday and year.
+5. **Desktop versus mobile.** Pages that ship two module sets get edits on one. Diff the visible text at 1440px and at 375px; say which side is right.
+6. **Tracking.** Base pixels on every step; a lead event on opt-in confirmations; no purchase snippet on any page when purchases go server-side; `gtag` defined, not merely present; a page on the wrong subdomain has no pixels at all.
+7. **Live redirect on every event confirmation page**, exactly once, with a future start; and no redirect on any replay sign-in page.
+8. **Titles, descriptions, share images.** Internal titles leak; empty meta descriptions and a missing `og:image` make every shared link render bare; confirmation and order pages carry noindex, never the whole domain.
+9. **Clone residue.** Another funnel's copy, another page's hero, another funnel's form, duplicate names and titles, stale clones, dead campaign framing, product-name drift, values that do not add up, casing drift, images nobody checked.
+10. **The chain past the page.** The form feeds the right workflow branch, the record lands with the right dropdown option, and the flip did not leave the ads pointing at the old funnel. A page the ad platform rejected is a page defect too.
+11. **After a fix.** Re-read the live page with a fresh query string (the preview pane is not the page; a stale read reports a fix as not done); check every page that carried the defect, not the first one; check for the regression the fix introduced.
+
+**8c-4. Report as a punch list.** One row per page, every page by its full URL, each finding with severity (blocker, major, minor), the evidence, the expected value from the spec, and who fixes it. Group by page so the page team can work top to bottom; put the full URL on every task.
+
+✅ **Check:** a punch list per funnel, a pages list with status, and the defect classes that recur across funnels (those become build standards, not tickets).
+
 ### Step 9. Security, access and resilience
 
 About two days. Know what one leaked credential, one departure or one deprecation would take down.
@@ -338,6 +426,7 @@ About two days. Know what one leaked credential, one departure or one deprecatio
 - Sensitive data and consent: which properties are marked sensitive, which keys can read them, whether any coded action logs payloads; where SMS and email consent is recorded and whether it would satisfy a TCPA or CAN-SPAM question; quiet hours; who handles a delete request and whether it reaches every connected platform.
 - Backups and retention: HubSpot keeps no restorable backup; are there scheduled exports, where do they go, who could rebuild a custom object from one.
 - API limits: daily call volume against the portal limit; the search API's rate limiting under scripted counts; which integration would fail first.
+- Access hygiene: whether two-factor authentication or single sign-on is enforced for every user, which logins are shared, when access was last reviewed and by whom, and the contract renewal calendar for every platform in the stack (renewal date, notice period, owner).
 - Monitoring: list what would page a person today. Usually nothing does.
 
 - Continuity: backup checkout links; a switchover plan for a second processor account; weekend coverage for the agency and the team; a restricted read key for an agency that wants to reconcile against the CRM itself (one key per consumer, named for them); who checks the ad platform credit line and prepayment schedule each week.
@@ -356,6 +445,8 @@ About a day. Understand the recurring work the system demands and whether it can
 - Meeting cadence that drives changes, and training: who has had HubSpot training, who holds a certification, what a new rep or marketer is shown on day one.
 
 - Event-week rhythm, reusable for every live event: a setup freeze two business days before, two days of testing, no open phone-platform issues going into the week, email and SMS sending coordinated through one person, check-ins three times a day, and a named escalation for each system when its owner is on stage.
+
+- Roll up the cost of the whole stack (every seat, line, add-on, agency and per-event fee) into one monthly number with an owner per line, so the roadmap can say what a change saves or costs.
 
 ✅ **Check:** a RACI exists for every workflow family and every integration, and the manual steps that should be automated or checklisted are listed.
 
